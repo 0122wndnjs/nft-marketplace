@@ -11,20 +11,10 @@ pragma solidity >=0.4.22 <0.9.0;
             - contract address, where it is being minted to, the id
     */
 
-    /*
-    1. write a function called _mint that takes two arguments an address
-    called to and an integer called tokenId.
-    2. add internal visibility to the signature
-    3. set the _tokenPower of the tokenId to the address argument 'to'
-    4. increase the owner token count by 1 each time the function is called
-
-    BONUS
-    create two requirements -
-    5. Require that the mint address isn't 0
-    6. Require that the token has not already been minted 
-    */
-
 contract ERC721 {
+
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+
     // mapping in solidity creates a hash table of key pair values 
 
     // Mapping from token id to the owner
@@ -49,5 +39,7 @@ contract ERC721 {
         _tokenOwner[tokenId] = to;
         // keeping track of each address that is minting and adding one 
         _OwnedTokensCount[to] += 1;
+
+        emit Transfer(address(0), to, tokenId);
     }
 }
