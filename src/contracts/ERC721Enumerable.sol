@@ -14,10 +14,6 @@ contract ERC721Enumerable is ERC721 {
     // mapping from token ID to index of the owner tokens list
     mapping(uint256 => uint256) private _ownedTokensIndex;
 
-    function totalSupply() external view returns (uint256) {
-        return _allTokens.length;
-    }
-
     // function tokenByIndex(uint256 _index) external view returns (uint256);
 
     // function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256);
@@ -27,10 +23,40 @@ contract ERC721Enumerable is ERC721 {
         // 1. add tokens to the owner
         // 2. add tokens to our totalsupply - to allTokens
 
-        _addTokensToTotalSupply(tokenId);
+        _addTokensToAllTokenEnumeration(tokenId);
+        _addTokensToOwnerEnumeration(to, tokenId);
     }
 
-    function _addTokensToTotalSupply(uint256 tokenId) private {
+    // add tokens to the _allTokens array and set the position of the indexes
+    function _addTokensToAllTokenEnumeration(uint256 tokenId) private {
+        _allTokensIndex[tokenId] = _allTokens.length;
         _allTokens.push(tokenId);
+    }
+
+    function _addTokensToOwnerEnumeration(address to, uint256 tokenId) private {
+        // 1. add address and tokenId to the _ownedTokens
+        // 2. ownedTokensIndex tokenId set to addresss of ownedTokens position
+        // 3. we want to execute the function with minting
+        _ownedTokensIndex[tokenId] = _ownedTokens[to].length;
+        _ownedTokens[to].push(tokenId);
+    }
+
+    // two functions - one that returns tokenByIndex and
+    // another one that returns tokenByOwnerIndex
+
+    function tokenByIndex(uint256 index) public view returns (uint256) {
+        // make sure that the index is not out of bounds of the total supply
+        require(index < totalSupply(), 'global index is out of bounds!');
+        return _allTokens[index];
+    }
+
+    function tokenOfOwnerByIndex(address owner, uint index) public view returns (uint256) {
+        require(index < balanceOf(owner), 'owner index is out of bounds!');
+        return _ownedTokens[owner][index];
+    }
+
+    // return the total supply of the _allTokens array
+    function totalSupply() public view returns (uint256) {
+        return _allTokens.length;
     }
 }
