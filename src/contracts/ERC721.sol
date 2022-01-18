@@ -28,7 +28,7 @@ contract ERC721 {
     ///  function throws for queries about the zero address.
     /// @param _owner An address for whom to query the balance
     /// @return The number of NFTs owned by `_owner`, possibly zero
-    function balanceOf(address owner) public view returns (uint256) {
+    function balanceOf(address _owner) public view returns (uint256) {
         require(_owner != address(0), 'owner query for non-existent token');
         return _OwnedTokensCount[_owner];
     }
@@ -40,6 +40,7 @@ contract ERC721 {
     /// @return The address of the owner of the NFT
     function ownerOf(uint256 _tokenId) external view returns (address) {
         address owner = _tokenOwner[_tokenId];
+        require(owner != address(0), 'owner query for non-existent token');
         return owner;
     }
 
