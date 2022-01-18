@@ -77,7 +77,7 @@ contract ERC721 {
     /// @param _from The current owner of the NFT
     /// @param _to The new owner
     /// @param _tokenId The NFT to transfer
-    function transferFrom(address _from, address _to, uint256 _tokenId) external payable {
+    function _transferFrom(address _from, address _to, uint256 _tokenId) internal {
         // 1. add the token id to the address receiving the token
         // 2. update the balance of the address _from token
         // 3. update the balance of the address _to
@@ -90,5 +90,11 @@ contract ERC721 {
         _OwnedTokensCount[_from] -= 1;
         _OwnedTokensCount[_to] += 1;
         _tokenOwner[_tokenId] = _to;
+
+        emit Transfer(_from, _to, _tokenId);
+    }
+
+    function transferFrom(address _from, address _to, uint256 _tokenId) public {
+        _transferFrom(_from, _to, _tokenId);
     }
 }
