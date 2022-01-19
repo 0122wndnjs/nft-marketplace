@@ -27,6 +27,21 @@ contract ERC721 is ERC165, IERC721 {
     // Mapping from token id to approved addresses
     mapping(uint256 => address) private _tokenApprovals;
 
+    // 1. REGISTER the Interface for the ERC721 contracts so that it includes the following functions:
+    // balanceOf, ownerOf, transferFrom
+    // *note by register the interface: write the constructors with the according byte conversions
+    
+    // 2. REGISTER the Interface for the ERC721Enumerable contract so that includes
+    // totalSupply, tokenByIndex, tokenOfOwnerByIndex
+    
+    // 3. REGISTER the Interface for the ERC721Metadata contract so that includes
+    // name, symbol
+
+    constructor() {
+        _registerInterface(bytes4(keccak256('balanceOf(bytes4)')^
+        keccak256('ownerOf(bytes4)')^keccak256('transferFrom(bytes4)')));
+    }
+
     /// @notice Count all NFTs assigned to an owner
     /// @dev NFTs assigned to the zero address are considered invalid, and this
     ///  function throws for queries about the zero address.
