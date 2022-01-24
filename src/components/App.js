@@ -28,8 +28,8 @@ class App extends Component {
 
     async loadBlockchainData() {
         const web3 = window.web3
-        const accounts = await window.web3.eth.getAccounts()
-        this.setState({account: accounts})
+        const accounts = await web3.eth.getAccounts()
+        this.setState({account: accounts[0]})
 
         // create a constant js variable networkId which is set to blockchain network id
         const networkId = await web3.eth.net.getId()
@@ -42,20 +42,50 @@ class App extends Component {
             const abi = KryptoBird.abi;
             const address = networkData.address;
             const contract = new web3.eth.Contract(abi, address);
-            console.log(contract);
+            this.setState({contract})
+
+            // call the total supply of our Krypto Birdz
+            // grab the total supply on the front end and log the results
+            const totalSupply = await contract.methods.totalSupply().call()
+            this.setState({totalSupply})
+
+            // load KryptoBirdz
+            for (let i = 1; i <= totalSupply; i++) {
+                const KryptoBird = await contract.methods.kryptoBirdz(i - 1).call()
+                this.setState({
+                    kryptoBirdz: [...this.state.kryptoBirdz, KryptoBird]
+                })
+            }
+        } else {
+            window.alert('Smart contract not deployed')
         }
+    }
+
+    // with minting we are sending innformation and we need to specify the account
+
+    mint = (kryptoBird) => {
+        this.state.contract.methods.mint(kryptoBird).send({from:this.state.account})
+        .once('receipt', (receipt) => {
+            this.setState({
+                kryptoBirdz: [...this.state.kryptoBirdz, KryptoBird]
+            })
+        })
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            account: ''
+            account: '',
+            contract: null,
+            totalSupply: 0,
+            kryptoBirdz: []
         }
     }
 
     render() {
         return (
             <div>
+                {console.log(this.state.kryptoBirdz)}
                 <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
                     <div className='navbar-brand col-sm-3 col-md-3 mr-0'>
                         Krypto Birdz NFTs (Non Fungile Tokens)
@@ -68,6 +98,33 @@ class App extends Component {
                         </li>
                     </ul>
                 </nav>
+
+                <div className='container-fluid mt-1'>
+                    <div className='row'>
+                        <main role='main' className='col-lg-12 d-flex text-center'>
+                            <div className='content mr-auto ml-auto' style={{opacity: '0.8'}}>
+                                <h1 style={{color: 'white'}}>KryptoBirdz - NFT Marketplace</h1>
+                                <form onSubmit={(event) => {
+                                    event.preventDefault()
+                                    const kryptoBird = this.kryptoBird.value
+                                    this.mint(kryptoBird)
+                                }}>
+                                    <input 
+                                    type='text' 
+                                    placeholder='Add a file location'
+                                    className='form-control mb-1'
+                                    ref={(input) => this.kryptoBird = input}
+                                    />
+                                    <input style={{margin: '6px'}}
+                                    type='submit'
+                                    className='btn btn-primary btn-black'
+                                    value='MINT'
+                                    />
+                                </form>
+                            </div>
+                        </main>
+                    </div>
+                </div>
             </div>
         )
     }
