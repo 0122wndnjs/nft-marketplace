@@ -86,7 +86,7 @@ class App extends Component {
 
     render() {
         return (
-            <div>
+            <div className='container-filled'>
                 {console.log(this.state.kryptoBirdz)}
                 <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
                     <div className='navbar-brand col-sm-3 col-md-3 mr-0'>
@@ -105,7 +105,7 @@ class App extends Component {
                     <div className='row'>
                         <main role='main' className='col-lg-12 d-flex text-center'>
                             <div className='content mr-auto ml-auto' style={{opacity: '0.8'}}>
-                                <h1 style={{color: 'white'}}>KryptoBirdz - NFT Marketplace</h1>
+                                <h1 style={{color: 'black'}}>KryptoBirdz - NFT Marketplace</h1>
                                 <form onSubmit={(event) => {
                                     event.preventDefault()
                                     const kryptoBird = this.kryptoBird.value
