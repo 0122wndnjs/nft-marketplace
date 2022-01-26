@@ -45,4 +45,10 @@ library SafeMath {
         uint256 r = x / y;
         return r;
     }
+
+    // gas spending remains untouched
+    function mod(uint256 x, uint256 y) internal pure returns (uint256) {
+        require(y != 0, 'SafeMath: Modulo by Zero');
+        return x % y;
+    }
 }
