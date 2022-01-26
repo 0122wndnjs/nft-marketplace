@@ -70,6 +70,8 @@ contract ERC721 is ERC165, IERC721 {
         return owner != address(0);
     }
 
+    // this function is not safe
+    // any type of mathematics can be held to dubious standards in SOLIDITY 
     function _mint(address to, uint256 tokenId) internal virtual {
         // requires that the address isn't zero
         require(to != address(0), 'ERC721: minting to the zero address');
